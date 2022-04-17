@@ -1,7 +1,9 @@
 <template>
     <div class="all-content">
         <NavSection
-            :pointsOfRussua="pointsOfRussua"
+            :pointsOfRussia="pointsOfRussia"
+            :citesOfRussia="citesOfRussia"
+            
         />
         <section class="map-section" id="map">
 
@@ -20,7 +22,8 @@
 
         data () {
             return {
-                pointsOfRussua: []
+                pointsOfRussia: [],
+                citesOfRussia: {}
             }
             
         },
@@ -30,9 +33,28 @@
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     //console.log(JSON.parse(BranchesPoints))
                     //currentFeature = BranchesPoints.features[i] 
-                    (BranchesPoints.features[i].country === 'Россия') ? this.pointsOfRussua.push(BranchesPoints.features[i]) : null
+                    (BranchesPoints.features[i].country === 'Россия') ? this.pointsOfRussia.push(BranchesPoints.features[i]) : null
                 }
-                console.log(this.pointsOfRussua)
+                
+                console.log('PoR: ', this.pointsOfRussia) 
+            },
+
+            getCitesOfRussia() { 
+               this.citesOfRussia[this.pointsOfRussia[0].city] = 1;  
+
+                for (let i = 1; i < this.pointsOfRussia.length; i++) {
+                    let boolVar = false
+                    for (let j = 0; j < Object.keys(this.citesOfRussia).length; j++) {
+                        if (Object.keys(this.citesOfRussia)[j] == this.pointsOfRussia[i].city ){
+                            this.citesOfRussia[Object.keys(this.citesOfRussia)[j]] +=1
+                            boolVar = true
+                        }   
+                    }
+                    if (!boolVar)   {
+                        this.citesOfRussia[this.pointsOfRussia[i].city] = 1;
+                    }
+                }
+                console.log('citesOfRussia: ', this.citesOfRussia);
             },
 
             async createMap() {
@@ -77,6 +99,7 @@
         async mounted() {
             await this.createMap()
             this.getRussianPoints()
+            this.getCitesOfRussia() 
         },         
     }
 

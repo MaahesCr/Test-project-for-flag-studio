@@ -2,7 +2,8 @@
         <section class="nav-section">
             <nav-sec-nav-pills/>
             <nav-sec-content 
-                :pointsOfRussua="pointsOfRussua"
+                :pointsOfRussia="pointsOfRussia"
+                :citesOfRussia="citesOfRussia"
             />
         </section>
 </template>
@@ -14,7 +15,11 @@ import NavSecNavPills from './NavSecNavPills.vue'
     export default {
         components: { NavSecNavPills, NavSecContent },
         props: {  
-          pointsOfRussua: {
+          pointsOfRussia: {
+                type: Array,
+                required: true
+            },
+            citesOfRussia: {
                 type: Array,
                 required: true
             }
