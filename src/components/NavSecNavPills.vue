@@ -24,6 +24,7 @@
     .nav-link{
         width: 100%;
         color: #929292;
+        border-radius: 0;
     }
 
     .nav-pills .nav-link.active{

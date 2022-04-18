@@ -1,24 +1,20 @@
 <template>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <div v-for="cites in Object.keys(citesOfRussia).length">
-                        <h1>{{Object.keys(citesOfRussia)[cites-1]}}</h1>
-                        <div v-for="point in citesOfRussia[Object.keys(citesOfRussia)[cites-1]]">
-                            <h1>ujdyj</h1>
-                            
-                        </div>
-                    <!--
-                        <p>
-                            <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Переключить первый элемент</a>
+                    <div v-for="city in Object.keys(citesOfRussia).length">
+                        <p class="expand-the-city-area">
+                            <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+city" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+city">
+                                {{Object.keys(citesOfRussia)[city-1]}}
+                            </a>
                         </p>
-                        <div class="collapse multi-collapse" id="multiCollapseExample1">
-                            <div class="card card-body">
-                                Некоторый заполнитель для первого компонента сворачивания в этом примере множественного сворачивания. Эта панель по умолчанию скрыта, но открывается, когда пользователь активирует соответствующий триггер.
+
+                        <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+city"> <!--id="multiCollapseExample1"-->
+                            <div v-for="varOfCity in Object.values(citesOfRussia)[city-1]" class="card card-body card-of-office">
+                                <h5 class="number-of-office">{{Object.values(pointsOfRussia)[varOfCity-1].properties.balloonContentHeader}}</h5>
+                                <h5 class="head-of-office">{{Object.values(pointsOfRussia)[varOfCity-1].properties.balloonContentBody}}</h5>
+                                <h5 class="contact-of-office">{{Object.values(pointsOfRussia)[varOfCity-1].properties.balloonContentFooter}}</h5>
                             </div>
                         </div>
-                        Раскрывающийся список по городу с количеством городов
-                        {{pointsOfRussia.length}}
-                        {{citesOfRussia}}-->
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
@@ -31,8 +27,7 @@
     export default {
         data () {
             return {
-                redactoredValues: [],
-                uniqueCities: [['kek', 2],['lol', 1]]
+                iterationVariable: 0
             }
             
         },
@@ -49,35 +44,53 @@
         },
 
                 methods: {
-                    async countNumberOfCities() {
-                        console.log('here: ', this.pointsOfRussia)
-                        //console.log('ooo', Object.keys(this.citesOfRussia).length)
-                        console.log('ooo', this.citesOfRussia)
-                        //console.log('sss', pointsOfRussia)
-                        //this.pointsOfRussia.then((data) => this.redactoredValues = data)
-                        /*
-                        console.log('redactoredValues: ', this.redactoredValues)
-                        console.log('L: ', this.redactoredValues.length)
-                        for (let i = 0; i < this.redactoredValues.length; i++){      
-                            if (this.redactoredValues[0].city == this.uniqueCities[i][0]) {
-                                this.uniqueCities[i][1] +=1
-                            }   else {
-                                this.uniqueCities.push([this.redactoredValues[0].city ,0])
-                            }   
-                        } 
-                        console.log('sd', this.uniqueCities)
-                        */
-                        //this.uniqueCities.push(this.redactoredValues[0].city)
+                    iteration() {
+                        this.iterationVariable += 1;
                     }
         },
 
         async mounted() {
-            this.redactoredValues = this.pointsOfRussia
-            await this.countNumberOfCities()   
+            
         }, 
     }
 </script>
 
 <style scoped>
+    .expand-the-city-area{
+        margin: 20px 10px;
+        border-bottom: 1px solid rgb(227, 227, 227);
+    }
 
+    .expand-the-city{
+        background: none;
+        color: orange;
+        border: none;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .btn-primary:focus {
+        box-shadow: none;
+    }
+
+    .card-of-office{
+        background: none;
+        border: none;
+        padding: 20px;
+    }
+
+    .number-of-office{
+        font-size: 18px;
+        color: rgb(30, 53, 93);
+    }
+
+    .head-of-office{
+        font-size: 16px;
+        padding: 10px 0;
+    }
+
+    .contact-of-office{
+    font-size: 16px;
+    white-space: normal;
+    }
 </style>
