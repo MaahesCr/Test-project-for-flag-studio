@@ -8,7 +8,7 @@
         <section class="map-section" id="map">
 
         </section>
-        <button @click="getCurrentArea"></button>
+        <button @click="getRussianArea"></button>
     </div>
 </template>
 
@@ -26,7 +26,8 @@
                 pointsOfRussia: [],
                 citesOfRussia: {},
                 propertiesValues: ["balloonContentHeader", "balloonContentBody", "balloonContentFooter", "clusterCaption"],
-                XOfMap: 55.76, YOfMap: 37.64
+                placemarkCollections: {},
+                russianArea: false
             }
             
         },
@@ -112,29 +113,30 @@
                 
             },
 
-            getCurrentArea() {
-                this.createMap()
-            },
-
             async createMap() {
                 ymaps.ready(this.init);
             }, 
 
             init(){
                 var myMap = new ymaps.Map('map', {
-                        center: [55.76, 37.64],
-                        zoom: 3
-                    }, {
-                        searchControlProvider: 'yandex#search'
-                    }),
+                    center: [55.76, 37.64],
+                    zoom: 3
+                }, {
+                    searchControlProvider: 'yandex#search'
+                }),
                     objectManager = new ymaps.ObjectManager({
-                        clusterize: true,
-                        gridSize: 32,
-                        clusterDisableClickZoom: true
-                    });
-                    objectManager.objects.options.set('preset', 'islands#greenDotIcon');
-                    objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
-                    myMap.geoObjects.add(objectManager);
+                    clusterize: true,
+                    gridSize: 32,
+                    clusterDisableClickZoom: true
+                });
+                    this.initPartTwo(myMap, objectManager)
+                    return [myMap, objectManager]
+            },
+                
+            initPartTwo(myMap, objectManager) {
+                objectManager.objects.options.set('preset', 'islands#greenDotIcon');
+                objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+                myMap.geoObjects.add(objectManager);
                     /*
                     $.ajax({
                         url: "data.json"
@@ -143,15 +145,41 @@
                     });
                     */
 
-                    //objectManager.add(BranchesPoints)   //тут цикл
-                    for (let i = 0; i < BranchesPoints.features.length; i++) {
-                            objectManager.add(BranchesPoints.features[i])
-                        }
-                        
+                    //objectManager.add(BranchesPoints)   //тут цикл    
+                for (let i = 0; i < BranchesPoints.features.length; i++) {
+                    objectManager.add(BranchesPoints.features[i])
+                }
+                this.getCurrentArea(myMap, objectManager)
+                },
+                
+            getCurrentArea(myMap, objectManager) {
                     myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
                         if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
                     });
+                /*
+                console.log(BranchesPoints.features[0])
+                new ymaps.GeoObjectCollection() new ymaps.Placemark
+                myMap.setBounds(BranchesPoints.features[0].getBounds(), {checkZoomRange:true}).then(function(){
+                    if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
+                });
+                /*
+                var placemarkCollections = {};
+                var placemarkList = {};
+                var cityCollection = new ymaps.GeoObjectCollection();
+                cityCollection.add(Object.values(this.pointsOfRussia))
+                placemarkCollections[0] = Object.values(this.pointsOfRussia)
+                myMap.setBounds(cityCollection[0].getBounds(), {checkZoomRange:true}).then(function(){
+                    if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
+                });
+                */
+            },
+
+            getRussianArea(){
+                this.russianArea = true
+                this.createMap()
             }
+
+                
         },
 
         async mounted() {
