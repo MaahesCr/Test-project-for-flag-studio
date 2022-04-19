@@ -64,7 +64,7 @@ function init() {
         placemarkCollections[i] = cityCollection;
 
         // Добавляем коллекцию на карту
-        myMap.geoObjects.add(cityCollection);
+        myMap.geoObjects.add(cityCollection); 
 
     }
 
@@ -73,7 +73,7 @@ function init() {
 
 
 // Переключение города
-$(document).on('change', $('select#city'), function () {
+$(document).on('change', $('select#city'), function () { 
     var cityId = $('select#cities').val();
 
     // Масштабируем и выравниваем карту так, чтобы были видны метки для выбранного города

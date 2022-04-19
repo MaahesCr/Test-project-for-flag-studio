@@ -1,24 +1,38 @@
 <template>
     <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            <div v-for="cityOfRussia in Object.entries(this.citesAndPointsOfRussia).length">
+            <div v-for="cityOfRussia in Object.entries(pointsOfRussia).length">
                 <p class="expand-the-city-area">
                     <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfRussia" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfRussia">
-                        {{Object.keys(this.citesAndPointsOfRussia)[cityOfRussia-1]}}
+                        {{Object.keys(pointsOfRussia)[cityOfRussia-1]}}
                     </a> 
    
                     <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfRussia"> 
-                        <div v-for="pointOfCity in Object.values(this.citesAndPointsOfRussia)[cityOfRussia-1].length" class="card card-body card-of-office">
-                            <h5 class="number-of-office">{{Object.values(this.citesAndPointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
-                            <h5 class="head-of-office">{{Object.values(this.citesAndPointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentBody}}</h5>
-                            <h5 class="contact-of-office">{{Object.values(this.citesAndPointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
+                        <div v-for="pointOfCity in Object.values(pointsOfRussia)[cityOfRussia-1].length" class="card card-body card-of-office">
+                            <h5 class="number-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
+                            <h5 class="head-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentBody}}</h5>
+                            <h5 class="contact-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
                         </div> 
                     </div>
                 </p>
             </div>
         </div>
         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-
+            <div v-for="cityOfBelarus in Object.entries(pointsOfBelarus).length">
+                <p class="expand-the-city-area">
+                    <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfBelarus" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfBelarus">
+                        {{Object.keys(pointsOfBelarus)[cityOfBelarus-1]}}
+                    </a> 
+   
+                    <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfBelarus"> 
+                        <div v-for="pointOfCity in Object.values(pointsOfBelarus)[cityOfBelarus-1].length" class="card card-body card-of-office">
+                            <h5 class="number-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
+                            <h5 class="head-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentBody}}</h5>
+                            <h5 class="contact-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
+                        </div> 
+                    </div>
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -34,14 +48,18 @@
         },
 
         props: {  
-          pointsOfRussia: {
+            pointsOfRussia: {
+                type: Array,
+                required: true,
+            },
+            pointsOfBelarus: {
                 type: Array,
                 required: true,
             }
         },
 
                 methods: {
-                    async getPropsValue() {
+                    /*async getPropsValue() {
                         return this.pointsOfRussia 
                     },
 
@@ -63,12 +81,13 @@
                                     this.boolVal = false
                                 }
                             }
+                            console.log('RP', this.citesAndPointsOfRussia)
                         })
-                    }
+                    }*/
         },
 
         async mounted() {
-            await this.setCitesAndPointsOfRussia()
+            //await this.setCitesAndPointsOfRussia()
         }, 
     }
 </script>
@@ -84,7 +103,7 @@
         color: orange;
         border: none;
         font-weight: bold;
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .btn-primary:focus {

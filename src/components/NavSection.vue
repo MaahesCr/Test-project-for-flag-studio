@@ -1,10 +1,12 @@
 <template>
         <section class="nav-section">
             <nav-sec-nav-pills
-                @updateRu="met"
+                @updateRu="updateCountryArea"
+                @updateBl="updateCountryArea"
             />
             <nav-sec-content 
                 :pointsOfRussia="pointsOfRussia"
+                :pointsOfBelarus="pointsOfBelarus"
                 ref="NavSectionContent"
             />
         </section>
@@ -16,15 +18,27 @@ import NavSecNavPills from './NavSecNavPills.vue'
 
     export default {
         components: { NavSecNavPills, NavSecContent },
+
+        data () {
+            return {
+               
+            }
+        },
+
         props: {  
-          pointsOfRussia: {
+            pointsOfRussia: {
+                type: Array,
+                required: true
+            },
+            pointsOfBelarus: {
                 type: Array,
                 required: true
             }
         },
         methods: {
-            met(data) {
-                this.$refs.NavSectionContent.setCitesAndPointsOfRussia()
+            updateCountryArea(data) {
+                this.$emit('updateCountryArea', data)
+                //this.$refs.NavSectionContent.setCitesAndPointsOfRussia()
             }
         }
     }
