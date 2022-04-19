@@ -1,9 +1,11 @@
 <template>
         <section class="nav-section">
-            <nav-sec-nav-pills/>
+            <nav-sec-nav-pills
+                @updateRu="met"
+            />
             <nav-sec-content 
                 :pointsOfRussia="pointsOfRussia"
-                :citesOfRussia="citesOfRussia"
+                ref="NavSectionContent"
             />
         </section>
 </template>
@@ -18,10 +20,11 @@ import NavSecNavPills from './NavSecNavPills.vue'
           pointsOfRussia: {
                 type: Array,
                 required: true
-            },
-            citesOfRussia: {
-                type: Array,
-                required: true
+            }
+        },
+        methods: {
+            met(data) {
+                this.$refs.NavSectionContent.setCitesAndPointsOfRussia()
             }
         }
     }
