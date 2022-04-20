@@ -20,11 +20,11 @@
         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
             <div v-for="cityOfBelarus in Object.entries(pointsOfBelarus).length">
                 <p class="expand-the-city-area">
-                    <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfBelarus" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfBelarus">
+                    <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfBelarus*100" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfBelarus*100">
                         {{Object.keys(pointsOfBelarus)[cityOfBelarus-1]}}
                     </a> 
    
-                    <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfBelarus"> 
+                    <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfBelarus*100"> 
                         <div v-for="pointOfCity in Object.values(pointsOfBelarus)[cityOfBelarus-1].length" class="card card-body card-of-office">
                             <h5 class="number-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
                             <h5 class="head-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentBody}}</h5>

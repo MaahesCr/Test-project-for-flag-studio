@@ -27,6 +27,7 @@
                 arrayOfRusPoint: [],
                 arrayOfBelPoint: [],
                 propertiesValues: ["balloonContentHeader", "balloonContentBody", "balloonContentFooter", "clusterCaption"],
+
                 curentArea: -1
             }
             
@@ -103,11 +104,11 @@
             async createMap() {
                 ymaps.ready(this.init);
             }, 
-
+ 
             init(){
                 let myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64],
-                    zoom: 3,
+                    zoom: 5,
                     controls: [
                         'zoomControl'
                     ],
@@ -120,13 +121,16 @@
                     gridSize: 32,
                     clusterDisableClickZoom: true
                 });
-                //this.myMapArea = myMap
                 this.initPartTwo(myMap, objectManager)
             },
                 
             initPartTwo(myMap, objectManager) {
                 objectManager.objects.options.set('preset', 'islands#nightCircleDotIcon');
                 objectManager.clusters.options.set('preset', 'islands#nightClusterIcons');
+                objectManager.events.add('click', async function (e) { 
+                    let coords = e.get('coords');
+                    myMap.setCenter([coords[0], coords[1]])
+                });
                 myMap.geoObjects.add(objectManager);
                     /*
                     $.ajax({
@@ -137,13 +141,12 @@
                     */
 
                     //objectManager.add(BranchesPoints)   //тут цикл   
-                    // ----------------- добавление всего на карту, НЕ УДАЛЯТЬ ----------- 
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     objectManager.add(BranchesPoints.features[i])
                 }
 
                 /*myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
-                    if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
+                    if(myMap.getZoom() > 15) myMap.setZoom(15); 
                 });*/
                 
                 this.getCurrentArea(myMap, objectManager)
@@ -155,13 +158,13 @@
                     gridSize: 32,
                     clusterDisableClickZoom: true
                 }) 
-                var placemarkList = {} 
-                var placemarkCollections = {};
-                var arr = [this.arrayOfRusPoint, this.arrayOfBelPoint]
+
+                let placemarkList = {} 
+                let placemarkCollections = {};
+                let arr = [this.arrayOfRusPoint, this.arrayOfBelPoint]
 
                 for (let j = 0; j < arr.length; j++){
                     for (let key in arr[j]) {
-                        console.log('Вот ето', Object.values(Object.values(Object.values(arr[j][key]))[2].coordinates))
                         let shopPlacemark = new ymaps.Placemark(
                             Object.values(Object.values(Object.values(arr[j][key]))[2].coordinates), 
                             {
@@ -170,14 +173,11 @@
                                 balloonContentBody: Object.values(arr[j][key])[3].balloonContentBody,
                                 balloonContentFooter: Object.values(arr[j][key])[3].balloonContentFooter
                             }
-                        )
-                        console.log('lookAtMe', Object.values(arr[j][key])[3].balloonContentBody)    
+                        )   
                         placemarkList[key] = shopPlacemark  
-
                         cityCollection.add(shopPlacemark)
                     }
                     placemarkCollections[j] = cityCollection
-                    console.log('cc', cityCollection.toArray())
 
                     cityCollection.options.set('preset', 'islands#nightCircleIcon');
                     cityCollection.options.set('visible', false);
@@ -191,15 +191,15 @@
                     clusterDisableClickZoom: true
                 })
                 }
-                console.log('pc', placemarkCollections)
-                console.log('CU', this.curentArea)
-                
+
                 myMap.setBounds(placemarkCollections[this.curentArea].getBounds(), {checkZoomRange:true}).then(function(){
-                    console.log('+')
                     if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
                 });
                 
-
+                 /*myMap.events.add('click', function (e) {
+                     let coords = e.get('coords');
+                     console.log(coords)
+                 })*/
                 /*myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
                     if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
                 });*/
@@ -207,10 +207,9 @@
 
             changeArea(curentCountry) {
                 this.curentArea = curentCountry
-                this.init()
-                //this.init(curentCountry)
-                console.log(curentCountry)
-
+                $('#map').empty()
+                this.createMap()
+                
                 /*
                 let myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64],
