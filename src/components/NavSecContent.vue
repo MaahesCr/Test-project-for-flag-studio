@@ -8,7 +8,7 @@
                     </a> 
    
                     <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfRussia"> 
-                        <div v-for="pointOfCity in Object.values(pointsOfRussia)[cityOfRussia-1].length" class="card card-body card-of-office">
+                        <div @click="getIdOfPoint(Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].id)" v-for="pointOfCity in Object.values(pointsOfRussia)[cityOfRussia-1].length" class="card card-body card-of-office">
                             <h5 class="number-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
                             <h5 class="head-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentBody}}</h5>
                             <h5 class="contact-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
@@ -25,7 +25,7 @@
                     </a> 
    
                     <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfBelarus*100"> 
-                        <div v-for="pointOfCity in Object.values(pointsOfBelarus)[cityOfBelarus-1].length" class="card card-body card-of-office">
+                        <div @click="getIdOfPoint(Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].id)" v-for="pointOfCity in Object.values(pointsOfBelarus)[cityOfBelarus-1].length" class="card card-body card-of-office">
                             <h5 class="number-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
                             <h5 class="head-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentBody}}</h5>
                             <h5 class="contact-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
@@ -59,6 +59,11 @@
         },
 
                 methods: {
+
+                    getIdOfPoint(id){
+                        console.log(id)
+                        this.$emit('getIdOfPoint', id)
+                    }
                     /*async getPropsValue() {
                         return this.pointsOfRussia 
                     },
@@ -111,6 +116,7 @@
     }
 
     .card-of-office{
+        cursor: pointer;
         background: none;
         border: none;
         padding: 20px;

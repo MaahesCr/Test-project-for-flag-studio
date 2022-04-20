@@ -7,6 +7,7 @@
             <nav-sec-content 
                 :pointsOfRussia="pointsOfRussia"
                 :pointsOfBelarus="pointsOfBelarus"
+                @getIdOfPoint="getIdOfPoint"
                 ref="NavSectionContent"
             />
         </section>
@@ -39,6 +40,10 @@ import NavSecNavPills from './NavSecNavPills.vue'
             updateCountryArea(data) {
                 this.$emit('updateCountryArea', data)
                 //this.$refs.NavSectionContent.setCitesAndPointsOfRussia()
+            },
+
+            getIdOfPoint(id){
+                this.$emit('getIdOfPoint', id)
             }
         }
     }

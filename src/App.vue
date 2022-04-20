@@ -4,8 +4,9 @@
             :pointsOfRussia="pointsOfRussia" 
             :pointsOfBelarus="pointsOfBelarus"
             @updateCountryArea="changeArea"
+            @getIdOfPoint="openBalloonById"
         />
-        <section class="map-section" id="map">
+        <section class="map-section" id="map" :key="updateMap">
 
         </section>
     </div>
@@ -27,8 +28,9 @@
                 arrayOfRusPoint: [],
                 arrayOfBelPoint: [],
                 propertiesValues: ["balloonContentHeader", "balloonContentBody", "balloonContentFooter", "clusterCaption"],
-
-                curentArea: -1
+                curentArea: -1,
+                idOfPoint: -1,
+                updateMap: ''
             }
             
         },
@@ -131,6 +133,22 @@
                     let coords = e.get('coords');
                     myMap.setCenter([coords[0], coords[1]])
                 });
+
+                if (this.idOfPoint != -1){
+                    let coords = BranchesPoints.features[this.idOfPoint].geometry.coordinates
+                    myMap.setCenter([coords[0], coords[1]])
+                    
+                    myMap.setZoom(6)
+                }
+                /*
+                let IDofpoint = this.idOfPoint
+                objectManager.events.add('parentchange', async function (e) { 
+                    console.log(BranchesPoints.features[IDofpoint].geometry)
+                    let coords = BranchesPoints.features[IDofpoint].geometry.coordinates
+                    myMap.setCenter([coords[0], coords[1]])
+                })*/
+                
+
                 myMap.geoObjects.add(objectManager);
                     /*
                     $.ajax({
@@ -144,7 +162,17 @@
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     objectManager.add(BranchesPoints.features[i])
                 }
+                
+                
+                try {
+                    objectManager.objects.balloon.open(this.idOfPoint)
+                    objectManager.objects.balloon.open(this.idOfPoint)
+                } catch {}
+                
+                
+                
 
+                //Object.values(objectManager.objects._collectionComponent._childList.hash)[0].balloon.open(0)
                 /*myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
                     if(myMap.getZoom() > 15) myMap.setZoom(15); 
                 });*/
@@ -191,10 +219,13 @@
                     clusterDisableClickZoom: true
                 })
                 }
+                
+                //console.log('ff', placemarkCollections[0])//placemarkCollections[0]._collectionComponent._baseArrayComponent._children[2])
+                //placemarkCollections[0]._collectionComponent._baseArrayComponent._children[2].balloon.open()
 
-                myMap.setBounds(placemarkCollections[this.curentArea].getBounds(), {checkZoomRange:true}).then(function(){
+                if (this.idOfPoint == -1) {myMap.setBounds(placemarkCollections[this.curentArea].getBounds(), {checkZoomRange:true}).then(function(){
                     if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
-                });
+                });}
                 
                  /*myMap.events.add('click', function (e) {
                      let coords = e.get('coords');
@@ -207,32 +238,16 @@
 
             changeArea(curentCountry) {
                 this.curentArea = curentCountry
-                $('#map').empty()
+                this.updateMap = Date.now()
+                this.idOfPoint = -1
                 this.createMap()
-                
-                /*
-                let myMap = new ymaps.Map('map', {
-                    center: [55.76, 37.64],
-                    zoom: 3
-                }, {
-                    searchControlProvider: 'yandex#search'
-                }),
-                    objectManager = new ymaps.ObjectManager({
-                    clusterize: true,
-                    gridSize: 32,
-                    clusterDisableClickZoom: true
-                });
-                
-                objectManager.objects.options.set('preset', 'islands#greenDotIcon');
-                objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
-                myMap.geoObjects.add(objectManager);  
+            },
 
-                for (let i = 0; i < curentCountry.length; i++) {
-                    objectManager.add(Object.values(curentCountry)[i])
-                }
-
-                this.getCurrentArea(myMap, objectManager)
-                */
+            openBalloonById(id) {
+                this.idOfPoint = id
+                this.updateMap = Date.now()
+                //$('#map').empty()
+                this.createMap()
             }
                 
         },
