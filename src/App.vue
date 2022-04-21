@@ -41,6 +41,7 @@
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     (BranchesPoints.features[i].country === 'Россия') ? this.pointsOfRussia.push(BranchesPoints.features[i]) : null
                 }   
+
                 // удаляю html разметку из пропса
                 for (let i = 0; i < Object.keys(this.pointsOfRussia).length; i++){
                     for (let j = 0; j < this.propertiesValues.length; j++){
@@ -49,7 +50,7 @@
                     }  
                 }
 
-                this.arrayOfRusPoint = this.pointsOfRussia
+                this.arrayOfRusPoint = this.pointsOfRussia                
 
                 let citesAndPointsOfRussia = {}
                 let boolVal = false 
@@ -108,14 +109,6 @@
             }, 
  
             init(){
-                /*var CustomLayoutClass = ymaps.templateLayoutFactory.createClass(
-                '<ul>' +
-                '{% for key, value in properties.hash %}' +
-                '<li>{{ key }} {{ value }}</li>' +
-                '{% endfor %}' +
-                '</ul>'
-                );*/
-
                 let myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64],
                     zoom: 5,
@@ -130,7 +123,6 @@
                     clusterize: true,
                     gridSize: 32,
                     clusterDisableClickZoom: true,
-                    //balloonContentLayout: CustomLayoutClass
                 });
                 this.initPartTwo(myMap, objectManager)
             },
@@ -139,14 +131,17 @@
                 objectManager.objects.options.set('preset', 'islands#nightCircleDotIcon');
                 objectManager.clusters.options.set('preset', 'islands#nightClusterIcons');
 
+                // стиль для балуна
                 let MyBalloonLayout = ymaps.templateLayoutFactory.createClass(
-                    '<div style ="background:#253b62; border-radius: 0; padding: 10px 15px; display: flex;flex-direction: column; width: auto; max-width: 500px" class="popover top">' +
-                        '<a style ="color:#FFF; text-decoration:none; align-self: flex-end;" class="close" href="#">&times;</a>' +
-                        '<div class="arrow"></div>' +
+                    '<div style ="color:white; background:#253b62; border-radius: 0; padding: 10px 15px; display: flex;flex-direction: column; width: auto; max-width: 500px; top: -90px;" class="popover top">' +
+                        '<a style ="color:#FFF; text-decoration:none; align-self: flex-end; position:absolute" class="close" href="#">&times;</a>' +
                         '<div class="popover-inner">' +
-                            '$[[options.contentLayout observeSize minWidth=235 maxWidth=235 maxHeight=350]]' +
+                            '$[[options.contentLayout observeSize width=auto height=auto maxHeight=350 word-wrap=break-word]]' +
                         '</div>' +
-                    '</div>', {
+                        '<div class="arrow"></div>'+
+                        '<div style="transform: rotate(45deg); height: 20px; width: 20px;align-self: center;margin-bottom: -20px; background:#253b62 ;"></div>' +
+                    '</div>'
+                    , {
                     build: function () {
                         this.constructor.superclass.build.call(this);
                         this._$element = $('.popover', this.getParentElement());
@@ -200,36 +195,31 @@
                         return element && element[0] && element.find('.arrow')[0];
                     }
                 })
-
+                // установка стиля для балуна
                 objectManager.options.set({
-                    //iconImageSize: [22, 28], // размеры картинки
-                    //iconImageOffset: [-11, -30], // смещение картинки
                     hideIconOnBalloon: true,
                     balloonLayout: MyBalloonLayout,
                     balloonShadow: false,
                     balloonAutoPan: false,
-                    balloonOffset: [3, -40]
+                    balloonOffset: [3, -20]
                     });
-                
+                //установка стиля для кластера
                 objectManager.objects.options.set({
-                    iconImageHref: '/images/icon-red.png', // картинка иконки
-                    iconImageSize: [400, 100], // размеры картинки
-                    iconImageOffset: [-11, -30], // смещение картинки
                     hideIconOnBalloon: true,
                     balloonLayout: MyBalloonLayout,
                     balloonShadow: false,
-                    balloonAutoPan: false
+                    balloonAutoPan: false,
+                    balloonOffset: [3, -20]
                     });
-
+                // центрация при клике на поинт 
                 objectManager.events.add('click', async function (e) { 
                     let coords = e.get('coords');
                     myMap.setCenter([coords[0], coords[1]])
                 });
-
+                // центрация при клике на ujhjl cktdf
                 if (this.idOfPoint != -1){
                     let coords = BranchesPoints.features[this.idOfPoint].geometry.coordinates
                     myMap.setCenter([coords[0], coords[1]])
-                    
                     myMap.setZoom(6)
                 }
                     /*
@@ -313,8 +303,7 @@
                 this.updateMap = Date.now()
                 //$('#map').empty()
                 this.createMap()
-            },
-                
+            }
         },
 
         async mounted() {
@@ -349,6 +338,7 @@
         height: 100vh;
         width: 100%;
     }
+    
     
     
 </style>
