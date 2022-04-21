@@ -6,6 +6,7 @@
             @updateCountryArea="changeArea"
             @getIdOfPoint="openBalloonById"
         />
+        <div class="shadow-on-the-map"></div>
         <section class="map-section" id="map" :key="updateMap">
 
         </section>
@@ -14,8 +15,7 @@
 
 <script>
     import NavSection from '@/components/NavSection.vue'
-    import BranchesPoints from '@/json/data.json';
-
+    import BranchesPoints from '../public/data.json';
     export default {
         components: {
             NavSection
@@ -108,6 +108,14 @@
             }, 
  
             init(){
+                /*var CustomLayoutClass = ymaps.templateLayoutFactory.createClass(
+                '<ul>' +
+                '{% for key, value in properties.hash %}' +
+                '<li>{{ key }} {{ value }}</li>' +
+                '{% endfor %}' +
+                '</ul>'
+                );*/
+
                 let myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64],
                     zoom: 5,
@@ -121,7 +129,8 @@
                     objectManager = new ymaps.ObjectManager({
                     clusterize: true,
                     gridSize: 32,
-                    clusterDisableClickZoom: true
+                    clusterDisableClickZoom: true,
+                    //balloonContentLayout: CustomLayoutClass
                 });
                 this.initPartTwo(myMap, objectManager)
             },
@@ -129,6 +138,89 @@
             initPartTwo(myMap, objectManager) {
                 objectManager.objects.options.set('preset', 'islands#nightCircleDotIcon');
                 objectManager.clusters.options.set('preset', 'islands#nightClusterIcons');
+
+                let MyBalloonLayout = ymaps.templateLayoutFactory.createClass(
+                    '<div style ="background:#253b62; border-radius: 0; padding: 10px 15px; display: flex;flex-direction: column; width: auto; max-width: 500px" class="popover top">' +
+                        '<a style ="color:#FFF; text-decoration:none; align-self: flex-end;" class="close" href="#">&times;</a>' +
+                        '<div class="arrow"></div>' +
+                        '<div class="popover-inner">' +
+                            '$[[options.contentLayout observeSize minWidth=235 maxWidth=235 maxHeight=350]]' +
+                        '</div>' +
+                    '</div>', {
+                    build: function () {
+                        this.constructor.superclass.build.call(this);
+                        this._$element = $('.popover', this.getParentElement());
+                        this.applyElementOffset();
+                        this._$element.find('.close')
+                            .on('click', $.proxy(this.onCloseClick, this));
+                    },
+
+                    clear: function () {
+                        this._$element.find('.close')
+                            .off('click');
+                        this.constructor.superclass.clear.call(this);
+                    },
+
+                    onSublayoutSizeChange: function () {
+                        MyBalloonLayout.superclass.onSublayoutSizeChange.apply(this, arguments);
+                        if(!this._isElement(this._$element)) {
+                            return;
+                        }
+                        this.applyElementOffset();
+                        this.events.fire('shapechange');
+                    },
+
+                    applyElementOffset: function () {
+                        this._$element.css({
+                            left: -(this._$element[0].offsetWidth / 2),
+                            top: -(this._$element[0].offsetHeight + this._$element.find('.arrow')[0].offsetHeight)
+                        });
+                    },
+
+                    onCloseClick: function (e) {
+                        e.preventDefault();
+
+                        this.events.fire('userclose');
+                    },
+
+                    getShape: function () {
+                        if(!this._isElement(this._$element)) {
+                            return MyBalloonLayout.superclass.getShape.call(this);
+                        }
+                        var position = this._$element.position();
+                        return new ymaps.shape.Rectangle(new ymaps.geometry.pixel.Rectangle([
+                            [position.left, position.top], [
+                                position.left + this._$element[0].offsetWidth,
+                                position.top + this._$element[0].offsetHeight + this._$element.find('.arrow')[0].offsetHeight
+                            ]
+                        ]));
+                    },
+
+                    _isElement: function (element) {
+                        return element && element[0] && element.find('.arrow')[0];
+                    }
+                })
+
+                objectManager.options.set({
+                    //iconImageSize: [22, 28], // размеры картинки
+                    //iconImageOffset: [-11, -30], // смещение картинки
+                    hideIconOnBalloon: true,
+                    balloonLayout: MyBalloonLayout,
+                    balloonShadow: false,
+                    balloonAutoPan: false,
+                    balloonOffset: [3, -40]
+                    });
+                
+                objectManager.objects.options.set({
+                    iconImageHref: '/images/icon-red.png', // картинка иконки
+                    iconImageSize: [400, 100], // размеры картинки
+                    iconImageOffset: [-11, -30], // смещение картинки
+                    hideIconOnBalloon: true,
+                    balloonLayout: MyBalloonLayout,
+                    balloonShadow: false,
+                    balloonAutoPan: false
+                    });
+
                 objectManager.events.add('click', async function (e) { 
                     let coords = e.get('coords');
                     myMap.setCenter([coords[0], coords[1]])
@@ -140,16 +232,6 @@
                     
                     myMap.setZoom(6)
                 }
-                /*
-                let IDofpoint = this.idOfPoint
-                objectManager.events.add('parentchange', async function (e) { 
-                    console.log(BranchesPoints.features[IDofpoint].geometry)
-                    let coords = BranchesPoints.features[IDofpoint].geometry.coordinates
-                    myMap.setCenter([coords[0], coords[1]])
-                })*/
-                
-
-                myMap.geoObjects.add(objectManager);
                     /*
                     $.ajax({
                         url: "data.json"
@@ -159,26 +241,21 @@
                     */
 
                     //objectManager.add(BranchesPoints)   //тут цикл   
+
+
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     objectManager.add(BranchesPoints.features[i])
                 }
                 
-                
+                myMap.geoObjects.add(objectManager);
+
                 try {
                     objectManager.objects.balloon.open(this.idOfPoint)
                     objectManager.objects.balloon.open(this.idOfPoint)
                 } catch {}
                 
-                
-                
-
-                //Object.values(objectManager.objects._collectionComponent._childList.hash)[0].balloon.open(0)
-                /*myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
-                    if(myMap.getZoom() > 15) myMap.setZoom(15); 
-                });*/
-                
                 this.getCurrentArea(myMap, objectManager)
-                },
+            },
                 
             getCurrentArea(myMap, objectManager) {
                 let cityCollection = new ymaps.GeoObjectCollection({}, {
@@ -209,8 +286,7 @@
 
                     cityCollection.options.set('preset', 'islands#nightCircleIcon');
                     cityCollection.options.set('visible', false);
-                    //cityCollection.clusters.options.set('preset', 'islands#greenClusterIcons');
-
+                    
                     myMap.geoObjects.add(cityCollection);
 
                     cityCollection = new ymaps.GeoObjectCollection({}, {
@@ -220,20 +296,9 @@
                 })
                 }
                 
-                //console.log('ff', placemarkCollections[0])//placemarkCollections[0]._collectionComponent._baseArrayComponent._children[2])
-                //placemarkCollections[0]._collectionComponent._baseArrayComponent._children[2].balloon.open()
-
                 if (this.idOfPoint == -1) {myMap.setBounds(placemarkCollections[this.curentArea].getBounds(), {checkZoomRange:true}).then(function(){
                     if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
                 });}
-                
-                 /*myMap.events.add('click', function (e) {
-                     let coords = e.get('coords');
-                     console.log(coords)
-                 })*/
-                /*myMap.setBounds(myMap.geoObjects.getBounds(), {checkZoomRange:true}).then(function(){
-                    if(myMap.getZoom() > 15) myMap.setZoom(15); // Если значение zoom превышает 15, то устанавливаем 15.
-                });*/
             },
 
             changeArea(curentCountry) {
@@ -248,7 +313,7 @@
                 this.updateMap = Date.now()
                 //$('#map').empty()
                 this.createMap()
-            }
+            },
                 
         },
 
@@ -256,7 +321,6 @@
             await this.createMap()
             this.getRussianPoints()
             this.getBelarusPoints()
-            //this.changeArea(this.arrayOfRusPoint)
         },         
     }
 
@@ -270,9 +334,21 @@
         overflow: hidden;
     }
 
+    .shadow-on-the-map{
+        position: absolute;
+        width: 8px;
+        height: 100vh;
+        margin-left: 20%;
+        z-index: 999999;
+        background: rgb(0,0,0);
+        background: linear-gradient(90deg, rgba(70,70,70,1) 0%, rgba(255,255,255,0) 80%);
+        pointer-events: none;
+    }
+
     .map-section{
         height: 100vh;
         width: 100%;
     }
+    
     
 </style>

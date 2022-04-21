@@ -3,32 +3,42 @@
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
             <div v-for="cityOfRussia in Object.entries(pointsOfRussia).length">
                 <p class="expand-the-city-area">
-                    <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfRussia" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfRussia">
-                        {{Object.keys(pointsOfRussia)[cityOfRussia-1]}}
-                    </a> 
+                    <p @click="changeColor(cityOfRussia)" style="display:flex; justify-content: space-between;" class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfRussia" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfRussia">
+                    <!--<a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfRussia" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfRussia">-->
+                        <div :id="'MCE'+cityOfRussia">{{Object.keys(pointsOfRussia)[cityOfRussia-1]}}</div>
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_j5o0zvf5.json" mode="bounce" background="transparent"  speed="1"  style="width: 30px; height: 30px;" hover  loop ></lottie-player>
+                    </p> 
+
    
                     <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfRussia"> 
                         <div @click="getIdOfPoint(Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].id)" v-for="pointOfCity in Object.values(pointsOfRussia)[cityOfRussia-1].length" class="card card-body card-of-office">
                             <h5 class="number-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
                             <h5 class="head-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentBody}}</h5>
-                            <h5 class="contact-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
+                            <!--<h5 class="contact-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].properties.balloonContentFooter}}</h5>-->
+                            <h5 class="contact-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].phoneNumbs}}</h5>
+                            <h5 class="email-of-office">{{Object.values(pointsOfRussia)[cityOfRussia-1][pointOfCity-1].mail}}</h5>
                         </div> 
                     </div>
                 </p>
+                
             </div>
         </div>
         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
             <div v-for="cityOfBelarus in Object.entries(pointsOfBelarus).length">
                 <p class="expand-the-city-area">
-                    <a class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfBelarus*100" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfBelarus*100">
-                        {{Object.keys(pointsOfBelarus)[cityOfBelarus-1]}}
-                    </a> 
+
+                    <p @click="changeColorOfB(cityOfBelarus*100)" style="display:flex; justify-content: space-between;" class="expand-the-city btn btn-primary" data-bs-toggle="collapse" v-bind:href="'#multiCollapseExample'+cityOfBelarus*100" role="button" aria-expanded="false" v-bind:aria-controls="'multiCollapseExample'+cityOfBelarus*100">
+                        <div :id="'MCE'+cityOfBelarus*100">{{Object.keys(pointsOfBelarus)[cityOfBelarus-1]}}</div>
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_j5o0zvf5.json" mode="bounce" background="transparent"  speed="1"  style="width: 30px; height: 30px;" hover  loop ></lottie-player>
+                    </p> 
    
                     <div class="collapse multi-collapse" v-bind:id="'multiCollapseExample'+cityOfBelarus*100"> 
                         <div @click="getIdOfPoint(Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].id)" v-for="pointOfCity in Object.values(pointsOfBelarus)[cityOfBelarus-1].length" class="card card-body card-of-office">
                             <h5 class="number-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentHeader}}</h5>
                             <h5 class="head-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentBody}}</h5>
-                            <h5 class="contact-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentFooter}}</h5>
+                            <!--<h5 class="contact-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].properties.balloonContentFooter}}</h5>-->
+                            <h5 class="contact-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].phoneNumbs}}</h5>
+                            <h5 class="email-of-office">{{Object.values(pointsOfBelarus)[cityOfBelarus-1][pointOfCity-1].mail}}</h5>
                         </div> 
                     </div>
                 </p>
@@ -42,7 +52,9 @@
         data () {
             return {
                 citesAndPointsOfRussia: {},
-                boolVal: false
+                boolVal: false,
+                color: true,
+                colorBel: true
             }
             
         },
@@ -63,36 +75,41 @@
                     getIdOfPoint(id){
                         console.log(id)
                         this.$emit('getIdOfPoint', id)
-                    }
-                    /*async getPropsValue() {
-                        return this.pointsOfRussia 
                     },
 
-                    async setCitesAndPointsOfRussia() {
-                        await this.getPropsValue().then((data) => {
-                           if (Object.values(this.citesAndPointsOfRussia).length == 0) {
-                                this.citesAndPointsOfRussia[Object.values(data)[0].city] = new Array(Object.values(data)[0])
-                                for(let i = 1; i < Object.keys(data).length; i++){
-                                    for (let j = 0; j < Object.keys(this.citesAndPointsOfRussia).length; j++) {
-                                        if (Object.values(data)[i].city == Object.keys(this.citesAndPointsOfRussia)[j]) {  //Object.values(this.citesAndPointsOfRussia)[0][0].city
-                                            Object.values(this.citesAndPointsOfRussia)[j].push(Object.values(data)[i]) 
-                                            this.boolVal = true
-                                        }
-                                    }
-                                    
-                                    if (!this.boolVal)   {
-                                        this.citesAndPointsOfRussia[Object.values(data)[i].city] = new Array(Object.values(data)[i])
-                                    }
-                                    this.boolVal = false
-                                }
-                            }
-                            console.log('RP', this.citesAndPointsOfRussia)
-                        })
-                    }*/
+                    async justFunc(){
+                        
+                        /*if (your_string.indexOf('hello') > -1)
+                            {
+                            alert("hello found inside your_string");
+                            }*/
+                    },
+
+                    changeColor(id) {
+                        if (this.color) {
+                            document.getElementById('MCE'+id).style="color:#FF9e00;"
+                        } else {
+                            document.getElementById('MCE'+id).style="color:rgb(30, 53, 93);"
+                        }
+                        this.color = !this.color
+                    },
+
+                    changeColorOfB(id){
+                        if (this.colorBel) {
+                            document.getElementById('MCE'+id).style="color:#FF9e00;"
+                        } else {
+                            document.getElementById('MCE'+id).style="color:rgb(30, 53, 93);"
+                        }
+                        this.colorBel = !this.colorBel
+                    }
+                    
+
+
         },
 
         async mounted() {
             //await this.setCitesAndPointsOfRussia()
+            await this.justFunc()
         }, 
     }
 </script>
@@ -103,9 +120,15 @@
         border-bottom: 1px solid rgb(227, 227, 227);
     }
 
+    .tab-content{
+    margin: 10px 0 0 0;
+    border-top: 1px solid rgb(227, 227, 227);
+    }
+
     .expand-the-city{
         background: none;
-        color: orange;
+        color: #FF9e00;
+        color: rgb(30, 53, 93);
         border: none;
         font-weight: bold;
         font-size: 18px;
@@ -133,7 +156,11 @@
     }
 
     .contact-of-office{
-    font-size: 16px;
-    white-space: normal;
+        font-size: 16px;
+        white-space: normal;
+    }
+    .email-of-office{
+        font-size: 16px;
+        color: #32b3e9;
     }
 </style>

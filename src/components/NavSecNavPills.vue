@@ -32,16 +32,24 @@
     .nav-li{
         width: 50%;
         border-radius: 1px;
+        
     }
 
     .nav-link{
         width: 100%;
         color: #929292;
+        background: #FFF;
         border-radius: 0;
+        
+        Box-shadow:0px 1px 0px #000,0px -1px 0px #000,1px 0px 0px #000,-1px 0px 0px #000;
+        transition: all 1s ease 0s;
     }
 
     .nav-pills .nav-link.active{
-        background-color: orange;
+        background-color: #FF9e00;
+        border: none;
+        Box-shadow: none;
+        transition: all 1s ease 0s;
     }
 
 </style>

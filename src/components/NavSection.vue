@@ -54,6 +54,6 @@ import NavSecNavPills from './NavSecNavPills.vue'
         background: #FAFAFA;
         width: 25%;
         height: 100vh;
-        border-right: 1px solid black;
+        box-shadow: 0 5px 0 0 #888;
     }
 </style>
