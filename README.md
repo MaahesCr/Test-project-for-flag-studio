@@ -1,19 +1,5 @@
-# flag-studio
+Test project for Flag-studio 
 
-## Project setup
-```
-npm install
-```
+Uploaded the implementation to the http://weather-app.h1n.ru/ind.html
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The task is: https://docs.google.com/document/d/14Ea_cIXmtzmEXtEkkVdz9TCGCupxOxqesqHAgC8ODy0/edit
