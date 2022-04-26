@@ -1,4 +1,5 @@
 <template>
+        <!--В этом компоненте вроде все неплохо, ничего менять бы не стал-->
         <section class="nav-section">
             <nav-sec-nav-pills
                 @updateRu="updateCountryArea"

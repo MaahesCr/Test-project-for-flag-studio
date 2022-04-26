@@ -35,7 +35,15 @@
             
         },
 
+        // Решил сделать комментарии к коду, старался сделать проект как можно быстрее, поэтому за solid особо не следил 
+
         methods: {
+
+            /* 
+            getRussianPoints и getBelarusPoints объединил бы в одно, сравнение по стране сделал бы через массив со странами
+            (для возможности добавления новых стран), вероятно сам метод getPoints получился получился больше чем стоило бы и стоит
+            разбить метод на два. Вообще с Vue работал в первый раз, вероятно это будет заметно. Сам проект выгружен на http://weather-app.h1n.ru/ind.html
+            */
             getRussianPoints() {
                 // формирую пропс только с российскими точками
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
@@ -49,9 +57,9 @@
                         this.pointsOfRussia[i].properties[currentVarOfProp] = this.pointsOfRussia[i].properties[currentVarOfProp].replace(/<(.|\n)*?>/g, '')
                     }  
                 }
-
+                // arrayOfRusPoint нужен чтобы создавать коллекции с областями, pointsOfRussia для передачи пропсом в дочернии компоненты
                 this.arrayOfRusPoint = this.pointsOfRussia                
-
+                // создаю пропс следующего вида: {nameOfCity: {pointsOfCity}}
                 let citesAndPointsOfRussia = {}
                 let boolVal = false 
                 citesAndPointsOfRussia[Object.values(this.pointsOfRussia)[0].city] = new Array(Object.values(this.pointsOfRussia)[0])
@@ -109,6 +117,8 @@
             }, 
  
             init(){
+                // создание карты, все взято из конструктора yandex api maps, код не самый свжий у них, но какой есть, вероятно стоило бы вынести
+                // переменную myMap в дату, облегчило бы смену текущей отображаемой области 
                 let myMap = new ymaps.Map('map', {
                     center: [55.76, 37.64],
                     zoom: 5,
@@ -126,12 +136,15 @@
                 });
                 this.initPartTwo(myMap, objectManager)
             },
-                
+            
+            // решил немного разбить метод init из песочницы яндекса на два, конечно  initPartTwo не лучшее название для метода
             initPartTwo(myMap, objectManager) {
                 objectManager.objects.options.set('preset', 'islands#nightCircleDotIcon');
                 objectManager.clusters.options.set('preset', 'islands#nightClusterIcons');
 
                 // стиль для балуна
+                // скорее всего MyBalloonLayout стоило вынести в data, и задать его параметры через функции срабатывающие при mounted
+                // вообще сбор MyBalloonLayout взят с песочницы карт Яндекса, там код занимал 140 срок, оптимизировал как мог, но все равно получилось доволбно громоздко  
                 let MyBalloonLayout = ymaps.templateLayoutFactory.createClass(
                     '<div style ="color:white; background:#253b62; border-radius: 0; padding: 10px 15px; display: flex;flex-direction: column; width: auto; max-width: 500px; top: -90px;" class="popover top">' +
                         '<a style ="color:#FFF; text-decoration:none; align-self: flex-end; position:absolute" class="close" href="#">&times;</a>' +
@@ -232,7 +245,6 @@
 
                     //objectManager.add(BranchesPoints)   //тут цикл   
 
-
                 for (let i = 0; i < BranchesPoints.features.length; i++) {
                     objectManager.add(BranchesPoints.features[i])
                 }
@@ -246,7 +258,11 @@
                 
                 this.getCurrentArea(myMap, objectManager)
             },
-                
+            
+            // лютый костыль, из-за того что спешил сделать проект хотябы mvp, изначально неправильно создал объекты на карте,
+            // изначально стоило бы использовать GeoObjectCollection тк для него можно менять текущую область отображения (для ObjectManager нельзя)
+            // по большому счету для отображения текущей области используется создание новых объектов для которых отключена видимость 
+            // оставил так потому что спешил сдать как можно скорее (переписал бы отображение правльно)
             getCurrentArea(myMap, objectManager) {
                 let cityCollection = new ymaps.GeoObjectCollection({}, {
                     clusterize: true,
@@ -316,6 +332,10 @@
 </script>
 
 <style scoped>
+    /*
+    sass не использовал тк не знал как скомпелировать его во vue, вообще опыт работы с sass есть, думаю не так сложно реализовать
+    его во vue
+    */
     .all-content{
         max-width: 100%;
         max-height: 100%;
@@ -338,7 +358,4 @@
         height: 100vh;
         width: 100%;
     }
-    
-    
-    
 </style>

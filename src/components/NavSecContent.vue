@@ -1,4 +1,5 @@
 <template>
+    <!--Сдесь напрашивается декомпозиция, разбил бы на два компонента, не сделал потому что торопился сдать проект-->
     <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
             <div v-for="cityOfRussia in Object.entries(pointsOfRussia).length">
@@ -73,7 +74,7 @@
                     changeColor(id) {
                         let curentHeader = $(`#MCE${id}`)[0];
                         this.toggleClass(curentHeader, 'orangeColor')
-
+                        // последовательный вызов методов - не лучшее решение, не знал как вызвать два метода при @click 
                         this.rotate(id)
                     },
 
